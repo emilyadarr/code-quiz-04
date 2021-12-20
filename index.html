@@ -10,17 +10,17 @@
 <body>
   <header>
     <a href="" id="high-scores">View high scores</a>
-    <div class="timer">
-      <p>Time: </p>
+    <div>
+      <p id="timer"></p>
     </div>
   </header>
   <div class="container">
-    <h1 class="question">Coding Quiz Challenge</h1>
-    <p id="options">Try to answer the code related questions within the time limit.</p>
-    <h2 id="answer"></h2>
-    <div class="start-quiz">
+    <h1 class="question" id="question">Coding Quiz Challenge</h1>
+    <p>Try to answer the code related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
+    <div class="start-quiz" id ="options">
       <button class="btn" id="start-btn" type="button">Start Quiz</button>
     </div>
+    <h2 id="answer"></h2>
   </div>
 
   <script src="./assets/js/script.js"></script>

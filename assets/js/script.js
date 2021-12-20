@@ -1,3 +1,31 @@
+var timerEl = document.getElementById("timer");
+var questionEl = document.getElementById("question");
+var optionsEl = document.getElementById("options");
+var answerEl = document.getElementById("answer");
+var startBtn = document.getElementById("start-btn");
+
+var question1 = "Commonly used data types DO NOT include:"
+
+function startQuiz() {
+  timer();
+};
+
+function timer() {
+  var timeLeft = 70;
+
+  var timeInterval = setInterval(function() {
+    if (timeLeft < 0) {
+      clearInterval(timeInterval);
+      timerEl.textContent = "0";
+    }
+    else {
+      timerEl.textContent = "Time: " + [timeLeft]
+      timeLeft--;
+    }
+  },1000);
+}
+
+startBtn.addEventListener("click", startQuiz);
 
 
 // AS A coding boot camp student
