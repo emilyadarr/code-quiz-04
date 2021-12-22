@@ -3,15 +3,22 @@ var questionEl = document.getElementById("question");
 var optionsEl = document.getElementById("options");
 var answerEl = document.getElementById("answer");
 var startBtn = document.getElementById("start-btn");
+var initialsEl = document.getElementById("initials");
+var submitBtn = document.getElementById("submit");
+var formEl = document.getElementById("form");
 var timeLeft = 70;
+
+formEl.style.display = "none";
 
 
 var option1 = document.createElement("button");
 var option2 = document.createElement("button");
 var option3 = document.createElement("button");
 var option4 = document.createElement("button");
-
-var currentQuestionIndex = 0;
+option1.className = "btn";
+option2.className = "btn";
+option3.className = "btn";
+option4.className = "btn";
 
 var questions = [
   {
@@ -27,7 +34,7 @@ var questions = [
   {
     title: "Arrays in JavaScript can be used to store ______.",
     choices: ["numbers and strings", "other arrays", "booleans", "all of the above"],
-    answer: ""
+    answer: "all of the above"
   },
   {
     title: "String values must be enclosed within _____ when being assigned to variables.",
@@ -37,26 +44,22 @@ var questions = [
   {
     title: "A very useful tool used during development and debugging for printing content to the debugger is:",
     choices: ["JavaScript", "terminal/bash", "for loops", "console.log"],
-    answer: ""
+    answer: "console.log"
   }
 ];
 
-option1.className = "btn";
-option2.className = "btn";
-option3.className = "btn";
-option4.className = "btn";
-
 function startQuiz() {
   timer();
-  question1();
+  questionFunc();
 };
 
 //questionObj.forEach(questionFunc);
 //function questionFunc() {
   // for (var i = 0; i < questionObj.length; i++) {
+    
+var currentQuestionIndex = 0;
 
-
-function question1() {
+function questionFunc() {
     var currentQuestion = questions[currentQuestionIndex];
     console.log(currentQuestionIndex);
     questionEl.textContent = currentQuestion.title;
@@ -71,29 +74,57 @@ function question1() {
     optionsEl.appendChild(option3);
     optionsEl.appendChild(option4);
   
-    if (currentQuestionIndex===0) {
+    if ((currentQuestionIndex === 0) || (currentQuestionIndex === 1)) {
       option1.addEventListener("click", wrong);
       option2.addEventListener("click", wrong);
       option3.addEventListener("click", correct);
       option4.addEventListener("click", wrong);
     }
+
+    if (currentQuestionIndex === 3) {
+      option1.addEventListener("click", wrong);
+      option2.addEventListener("click", wrong);
+      option3.addEventListener("click", correct);
+      option4.addEventListener("click", wrong);  
+    }
+
+    if ((currentQuestionIndex === 2) || (currentQuestionIndex === 4)) {
+      option1.addEventListener("click", wrong);
+      option2.addEventListener("click", wrong);
+      option3.addEventListener("click", wrong);
+      option4.addEventListener("click", correct);
+    }
   }
 
 function correct() {
   answerEl.textContent = "Correct!";
-  if (currentQuestionIndex < questions.length) {
+  if (currentQuestionIndex < questions.length - 1) {
     currentQuestionIndex++;
-    question1();
+    questionFunc();
+  }
+  else {
+    endQuiz();
   }
 }
 
 function wrong() {
   answerEl.textContent = "Wrong!";
   timeLeft = timeLeft -10;
-  if (currentQuestionIndex < questions.length) {
+  if (currentQuestionIndex < questions.length - 1) {
     currentQuestionIndex++;
-    question1();
+    questionFunc();
   }
+  else {
+    endQuiz();
+  }
+}
+
+function endQuiz() {
+  questionEl.textContent = "All done!";
+  optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
+  timerEl.textContent = "";
+  formEl.style.display = "block";
+  submitBtn.addEventListener("click", saveHighScore())
 }
 
 function timer() {
@@ -102,6 +133,8 @@ function timer() {
     if (timeLeft < 0) {
       clearInterval(timeInterval);
       timerEl.textContent = "0";
+      timeLeft = 0;
+      endQuiz();
     }
     else {
       timerEl.textContent = "Time: " + [timeLeft]
@@ -109,6 +142,24 @@ function timer() {
     }
   },1000);
 }
+
+function saveHighScore() {
+  var initials = initialsEl.value.trim();
+  console.log(initials);
+
+  var highscores = 
+    JSON.parse(window.localStorage.getItem("highscores"));
+    if (highscores === null) {
+      highscores = 0;
+    }
+
+    if (timeLeft > highscores) {
+      JSON.stringify(window.localStorage.setItem("highscores", timeLeft))
+      JSON.stringify(window.localStorage.setItem("initials", initials))
+    }
+}
+
+
 
 startBtn.addEventListener("click", startQuiz);
 
