@@ -75,6 +75,18 @@ form {
   justify-content: center;
 }
 
+.high-scores {
+  margin: 10px 150px;
+}
+
+
+#high-scores-list {
+  background-color:#b9a4e9;
+  text-align: center;
+  padding: 20px;
+  margin: auto;
+}
+
 /* 
   top: 50%;
   left: 50%;

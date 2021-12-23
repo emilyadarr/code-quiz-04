@@ -6,7 +6,7 @@ var startBtn = document.getElementById("start-btn");
 var initialsEl = document.getElementById("initials");
 var submitBtn = document.getElementById("submit");
 var formEl = document.getElementById("form");
-var timeLeft = 70;
+var timeLeft = 0;
 
 formEl.style.display = "none";
 
@@ -45,82 +45,41 @@ function startQuiz() {
   questionFunc();
 };
 
-// TODO: REwork area from notes
 var currentQuestionIndex = 0;
+
 function questionFunc() {
   var currentQuestion = questions[currentQuestionIndex];
-  var option1 = document.createElement("button");
-  var option2 = document.createElement("button");
-  var option3 = document.createElement("button");
-  var option4 = document.createElement("button");
-  option1.className = "btn";
-  option2.className = "btn";
-  option3.className = "btn";
-  option4.className = "btn";
-  console.log(currentQuestionIndex);
   questionEl.textContent = currentQuestion.title;
-  
-  optionsEl.innerHTML ="";
-  option1.textContent = "1. " + currentQuestion.choices[0];
-  option2.textContent = "2. " + currentQuestion.choices[1];
-  option3.textContent = "3. " + currentQuestion.choices[2];
-  option4.textContent = "4. " + currentQuestion.choices[3];
-  optionsEl.appendChild(option1);
-  optionsEl.appendChild(option2);
-  optionsEl.appendChild(option3);
-  optionsEl.appendChild(option4);
-  
-  if ((currentQuestionIndex === 0) || (currentQuestionIndex === 1) || (currentQuestionIndex === 3)) {
-    option1.addEventListener("click", wrong);
-    option2.addEventListener("click", wrong);
-    option3.addEventListener("click", correct);
-    option4.addEventListener("click", wrong);
+  optionsEl.innerHTML = "";
+  for (var i = 0; i < currentQuestion.choices.length; i++) {
+    const answer = currentQuestion.choices[i];
+    const option = document.createElement("button");
+    option.setAttribute("class", "btn");
+    option.textContent = i + 1 + ". " + currentQuestion.choices[i];
+    option.addEventListener("click", function () {
+      selectAnswer(answer);
+    })
+    optionsEl.appendChild(option);
   }
-
-  if ((currentQuestionIndex === 2) || (currentQuestionIndex === 4)) {
-    option1.addEventListener("click", wrong);
-    option2.addEventListener("click", wrong);
-    option3.addEventListener("click", wrong);
-    option4.addEventListener("click", correct);
+}
+//TODO: add sound effects to right and wrong answers
+function selectAnswer(answer) {
+  if (answer === questions[currentQuestionIndex].answer) {
+    answerEl.textContent = "Correct!";
+  } else {
+    answerEl.textContent = "Wrong!";
+    timeLeft = timeLeft - 10;
   }
-};
-
-function correct() {
-  answerEl.textContent = "Correct!";
-  if (currentQuestionIndex < questions.length - 1) {
-    currentQuestionIndex++;
+  currentQuestionIndex++;
+  if (currentQuestionIndex === questions.length) {
+    endQuiz();
+  } else {
     questionFunc();
   }
-  else {
-    endQuiz();
-  }
-};
-
-function wrong() {
-  answerEl.textContent = "Wrong!";
-  timeLeft = timeLeft -10;
-  if (currentQuestionIndex < questions.length - 1) {
-    currentQuestionIndex++;
-    questionFunc();
-  }
-  else {
-    endQuiz();
-  }
-};
-
-
-function endQuiz() {
-  //var finalScore = timeLeft;
-  questionEl.textContent = "All done!";
-  optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
-  timerEl.textContent = "";
-  formEl.style.display = "block";
-  formEl.addEventListener("click", saveHighScore())
-  //return finalScore;
-};
-
+}
 
 function timer() {
+  timeLeft = 70;
   var timeInterval = setInterval(function() {
     if (timeLeft < 0) {
       clearInterval(timeInterval);
@@ -128,22 +87,48 @@ function timer() {
       timeLeft = 0;
       endQuiz();
     }
-    // TODO: Figure out how to clear interval after questions
-    // if (endQuiz) {
+    // else if (endQuiz) {
     //   clearInterval(timeInterval);
     // }
+    // TODO: Figure out how to clear interval after questions
     else {
       timerEl.textContent = "Time: " + [timeLeft]
       timeLeft--;
     }
   },1000);
+
+  // if (currentQuestionIndex === questions.length) {
+  //   clearInterval(timeInterval);
+  // }
+  
+  // if (endQuiz) {
+  //   clearInterval(timeInterval);
+  // }
 };
+
+var finalScore = [];
+function endQuiz() {
+  //var finalScore = timeLeft;
+  questionEl.textContent = "All done!";
+  optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
+  timerEl.textContent = "";
+  formEl.style.display = "block";
+  //timeLeft = clearInterval(timeLeft);
+  finalScore.push(timeLeft);
+  clearInterval(timeLeft);
+
+  //formEl.addEventListener("click", saveHighScore())
+  //return finalScore;
+};
+console.log(finalScore);
+
+
 
 // TODO: LEFT OFF HERE. need to figure out how to save highscores to local storage
 // create array to hold high scores for saving
 var highScores = [];
 
-var createHighScore = function(event) {
+var highScoreHandler = function(event) {
   event.preventDefault();
   var initialsInput = document.querySelector("input[name='initials']").value;
   
@@ -154,7 +139,7 @@ var createHighScore = function(event) {
 
   var highScoreObj = {
     name: initialsInput,
-    score: timeLeft
+    score: finalScore
   };
 
   highScores.push(highScoreObj);
@@ -164,11 +149,11 @@ var createHighScore = function(event) {
 };
 
 var saveHighScore = function() {
-  localStorage.setItem("highScores", JSON.stringify(highScores));
+localStorage.setItem("highScores", JSON.stringify(highScores));
 };
 
 var loadHighScore = function() {
-  var savedHighScores = localStorage.getitem("tasks");
+  var savedHighScores = localStorage.getitem("highScores");
     if (!savedHighScores) {
       return false;
     }
@@ -179,7 +164,11 @@ var loadHighScore = function() {
     }
 };
 
-formEl.addEventListener("submit", createHighScore);
+var createHighScore = function() {
+
+}
+
+formEl.addEventListener("submit", highScoreHandler);
 
 // function saveHighScore() {
 //   var initials = initialsEl.value.trim();
