@@ -7,6 +7,7 @@ var initialsEl = document.getElementById("initials");
 var submitBtn = document.getElementById("submit");
 var formEl = document.getElementById("form");
 var timeLeft = 0;
+var timeInterval;
 
 formEl.style.display = "none";
 
@@ -80,7 +81,7 @@ function selectAnswer(answer) {
 
 function timer() {
   timeLeft = 70;
-  var timeInterval = setInterval(function() {
+  timeInterval = setInterval(function() {
     if (timeLeft < 0) {
       clearInterval(timeInterval);
       timerEl.textContent = "0";
@@ -108,6 +109,7 @@ function timer() {
 
 var finalScore = [];
 function endQuiz() {
+  clearInterval(timeInterval);
   //var finalScore = timeLeft;
   questionEl.textContent = "All done!";
   optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
@@ -115,20 +117,21 @@ function endQuiz() {
   formEl.style.display = "block";
   //timeLeft = clearInterval(timeLeft);
   finalScore.push(timeLeft);
-  clearInterval(timeLeft);
 
   //formEl.addEventListener("click", saveHighScore())
   //return finalScore;
 };
-console.log(finalScore);
+//console.log(finalScore);
 
 
 
 // TODO: LEFT OFF HERE. need to figure out how to save highscores to local storage
 // create array to hold high scores for saving
-var highScores = [];
 
 var highScoreHandler = function(event) {
+  alert("test high score");
+  var highScores = window.localStorage.getItem("highScores") || [];
+  console.log("highScores" + highScores);
   event.preventDefault();
   var initialsInput = document.querySelector("input[name='initials']").value;
   
@@ -142,33 +145,37 @@ var highScoreHandler = function(event) {
     score: finalScore
   };
 
+  console.log(highScoreObj);
+  
   highScores.push(highScoreObj);
   console.log(highScores);
 
   saveHighScore();
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+
+  window.location.href= "highScores.html"
 };
 
-var saveHighScore = function() {
-localStorage.setItem("highScores", JSON.stringify(highScores));
-};
 
-var loadHighScore = function() {
-  var savedHighScores = localStorage.getitem("highScores");
-    if (!savedHighScores) {
-      return false;
-    }
-    savedHighScores = JSON.parse(savedHighScores);
 
-    for (var i = 0; i < savedHighScores.length; i++) {
-      createHighScore(savedHighScores[i]);
-    }
-};
+// var loadHighScore = function() {
+//   var savedHighScores = localStorage.getitem("highScores");
+//     if (!savedHighScores) {
+//       return false;
+//     }
+//     savedHighScores = JSON.parse(savedHighScores);
 
-var createHighScore = function() {
+//     for (var i = 0; i < savedHighScores.length; i++) {
+//       createHighScore(savedHighScores[i]);
+//     }
+// };
 
-}
+// var createHighScore = function() {
 
-formEl.addEventListener("submit", highScoreHandler);
+// }
+
+submitBtn.addEventListener("click", highScoreHandler);
+//formEl.addEventListener("submit", highScoreHandler);
 
 // function saveHighScore() {
 //   var initials = initialsEl.value.trim();
