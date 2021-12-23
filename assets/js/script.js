@@ -128,9 +128,8 @@ function endQuiz() {
 // TODO: LEFT OFF HERE. need to figure out how to save highscores to local storage
 // create array to hold high scores for saving
 
+var highScores = JSON.parse(window.localStorage.getItem("highScores")) || [];
 var highScoreHandler = function(event) {
-  alert("test high score");
-  var highScores = window.localStorage.getItem("highScores") || [];
   console.log("highScores" + highScores);
   event.preventDefault();
   var initialsInput = document.querySelector("input[name='initials']").value;
@@ -146,16 +145,22 @@ var highScoreHandler = function(event) {
   };
 
   console.log(highScoreObj);
-  
+
   highScores.push(highScoreObj);
   console.log(highScores);
 
-  saveHighScore();
+  //saveHighScore();
   localStorage.setItem("highScores", JSON.stringify(highScores));
 
   window.location.href= "highScores.html"
 };
 
+  
+
+  // var createHighScoreEl = function(savedHighScores) {
+  //   const score = document.createElement("li");
+  // }
+// };
 
 
 // var loadHighScore = function() {
