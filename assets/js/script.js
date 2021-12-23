@@ -45,6 +45,7 @@ function startQuiz() {
   questionFunc();
 };
 
+// TODO: REwork area from notes
 var currentQuestionIndex = 0;
 function questionFunc() {
   var currentQuestion = questions[currentQuestionIndex];
@@ -82,7 +83,7 @@ function questionFunc() {
     option3.addEventListener("click", wrong);
     option4.addEventListener("click", correct);
   }
-}
+};
 
 function correct() {
   answerEl.textContent = "Correct!";
@@ -93,7 +94,7 @@ function correct() {
   else {
     endQuiz();
   }
-}
+};
 
 function wrong() {
   answerEl.textContent = "Wrong!";
@@ -105,18 +106,21 @@ function wrong() {
   else {
     endQuiz();
   }
-}
+};
+
 
 function endQuiz() {
+  //var finalScore = timeLeft;
   questionEl.textContent = "All done!";
   optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
   timerEl.textContent = "";
   formEl.style.display = "block";
-  submitBtn.addEventListener("click", saveHighScore())
-}
+  formEl.addEventListener("click", saveHighScore())
+  //return finalScore;
+};
+
 
 function timer() {
-
   var timeInterval = setInterval(function() {
     if (timeLeft < 0) {
       clearInterval(timeInterval);
@@ -124,13 +128,18 @@ function timer() {
       timeLeft = 0;
       endQuiz();
     }
+    // TODO: Figure out how to clear interval after questions
+    // if (endQuiz) {
+    //   clearInterval(timeInterval);
+    // }
     else {
       timerEl.textContent = "Time: " + [timeLeft]
       timeLeft--;
     }
   },1000);
-}
+};
 
+// TODO: LEFT OFF HERE. need to figure out how to save highscores to local storage
 // create array to hold high scores for saving
 var highScores = [];
 
@@ -141,21 +150,22 @@ var createHighScore = function(event) {
   if (!initialsInput) {
     alert("You need to enter your initials!");
     return false;
-  }
+  };
 
   var highScoreObj = {
     name: initialsInput,
     score: timeLeft
-  }
+  };
 
   highScores.push(highScoreObj);
+  console.log(highScores);
 
   saveHighScore();
-}
+};
 
 var saveHighScore = function() {
-  window.localStorage.setItem("highScores", JSON.stringify(highScores));
-}
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+};
 
 var loadHighScore = function() {
   var savedHighScores = localStorage.getitem("tasks");
@@ -167,9 +177,9 @@ var loadHighScore = function() {
     for (var i = 0; i < savedHighScores.length; i++) {
       createHighScore(savedHighScores[i]);
     }
-}
+};
 
-submitBtn.addEventListener("submit", createHighScore);
+formEl.addEventListener("submit", createHighScore);
 
 // function saveHighScore() {
 //   var initials = initialsEl.value.trim();
