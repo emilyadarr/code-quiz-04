@@ -1,59 +1,37 @@
-var highScoresList = document.querySelector("#high-scores-list");
 var highScoresContainer = document.querySelector("#high-scores");
 var goBack = document.getElementById("goback");
+var clearScores = document.getElementById("clearscores");
 
-goBack.addEventListener("click", goBackToHome);
-
+// go back button to return to index.html
 function goBackToHome() {
   window.location.assign("index.html");
 }
+// clear scores button to clear local storage
+function clearScoresFunc() {
+  localStorage.clear("highScores")
+  window.location.reload();
+};
 
+// load high scores onto page
 var loadHighScore = function() {
-  var savedHighScores = localStorage.getitem("highScores");
-    // if (!highScores) {
-    //   return false;
-    // }
-    // savedHighScores = JSON.parse(savedHighScores);
-
-    //highScores = JSON.parse(highScores);
-  console.log(savedHighScores);
-      for (var i = 0; i < highScores.length; i++) {
-        //const score = savedHighScores[i];
-        var scoreItemEl = document.createElement("li");
-        console.log(scoreItemEl);
-        var scoreItem = document.createElement("div");
-        //score.setAttribute("class", "");
-        scoreItem.textContent = highScores[i];
-        scoreItemEl.appendChild(scoreItem);
+  var savedHighScores = JSON.parse(window.localStorage.getItem("highScores")) || [];
   
-      }
-  
-  // var createHighScoreEl = function(savedHighScores) {
-  //   const score = document.createElement("li");
-  // }
+  // sort high scores by score property in decending order
+  savedHighScores.sort(function (a,b) {
+    return b.score - a.score;
+  });
+      
+  for (var i = 0; i < savedHighScores.length; i++) {
+    var scoreItem = document.createElement("div");
+    scoreItem.innerText= i + 1 + ". " + savedHighScores[i].name + " - " + savedHighScores[i].score;
+    scoreItem.setAttribute("class", "score-item");
+    highScoresContainer.appendChild(scoreItem);
+    
+  }
 };
 
 loadHighScore();
 
+goBack.addEventListener("click", goBackToHome);
 
-// function questionFunc() {
-//   var currentQuestion = questions[currentQuestionIndex];
-//   questionEl.textContent = currentQuestion.title;
-//   optionsEl.innerHTML = "";
-//   for (var i = 0; i < currentQuestion.choices.length; i++) {
-//     const answer = currentQuestion.choices[i];
-//     const option = document.createElement("button");
-//     option.setAttribute("class", "btn");
-//     option.textContent = i + 1 + ". " + currentQuestion.choices[i];
-//     option.addEventListener("click", function () {
-//       selectAnswer(answer);
-//     })
-//     optionsEl.appendChild(option);
-//   }
-// }
-
-// var createHighScoreEl = function(savedHighScores) {
-//   const score = document.createElement("li");
-  
-
-// }
+clearScores.addEventListener("click", clearScoresFunc);

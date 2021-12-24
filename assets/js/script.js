@@ -3,16 +3,11 @@ var questionEl = document.getElementById("question");
 var optionsEl = document.getElementById("options");
 var answerEl = document.getElementById("answer");
 var startBtn = document.getElementById("start-btn");
-var initialsEl = document.getElementById("initials");
-var submitBtn = document.getElementById("submit");
 var formEl = document.getElementById("form");
 var timeLeft = 0;
 var timeInterval;
 
-formEl.style.display = "none";
-
-
-
+// array of questions with choices and answers
 var questions = [
   {
     title: "Commonly used data types DO NOT include:",
@@ -41,11 +36,13 @@ var questions = [
   }
 ];
 
+// startQuiz function to run timer and question functions
 function startQuiz() {
   timer();
   questionFunc();
 };
 
+// questionFunc function - for loop to run through question array
 var currentQuestionIndex = 0;
 
 function questionFunc() {
@@ -63,12 +60,17 @@ function questionFunc() {
     optionsEl.appendChild(option);
   }
 }
-//TODO: add sound effects to right and wrong answers
+
+// selectAnswer function to check answer
 function selectAnswer(answer) {
   if (answer === questions[currentQuestionIndex].answer) {
     answerEl.textContent = "Correct!";
+    var correctAudio = new Audio('./assets/sounds/correct.wav');
+    correctAudio.play();
   } else {
     answerEl.textContent = "Wrong!";
+    var wrongAudio = new Audio("./assets/sounds/incorrect.wav");
+    wrongAudio.play();
     timeLeft = timeLeft - 10;
   }
   currentQuestionIndex++;
@@ -79,6 +81,7 @@ function selectAnswer(answer) {
   }
 }
 
+//timer function to countdown
 function timer() {
   timeLeft = 70;
   timeInterval = setInterval(function() {
@@ -88,49 +91,39 @@ function timer() {
       timeLeft = 0;
       endQuiz();
     }
-    // else if (endQuiz) {
-    //   clearInterval(timeInterval);
-    // }
-    // TODO: Figure out how to clear interval after questions
     else {
       timerEl.textContent = "Time: " + [timeLeft]
       timeLeft--;
     }
   },1000);
-
-  // if (currentQuestionIndex === questions.length) {
-  //   clearInterval(timeInterval);
-  // }
-  
-  // if (endQuiz) {
-  //   clearInterval(timeInterval);
-  // }
 };
 
-var finalScore = [];
+//endQuiz function to run when time runs out or all questions are answered
 function endQuiz() {
   clearInterval(timeInterval);
-  //var finalScore = timeLeft;
   questionEl.textContent = "All done!";
   optionsEl.textContent = "Your final score is " + [timeLeft] + ".";
   timerEl.textContent = "";
-  formEl.style.display = "block";
-  //timeLeft = clearInterval(timeLeft);
-  finalScore.push(timeLeft);
 
-  //formEl.addEventListener("click", saveHighScore())
-  //return finalScore;
+  var formInput = document.createElement ("input");
+  formInput.setAttribute("class", "form-text");
+  formInput.setAttribute("name", "initials");
+  formInput.setAttribute("placeholder", "Enter your initials");
+
+  var formButton = document.createElement ("button");
+  formButton.setAttribute("class", "btn");
+  formButton.setAttribute("type", "submit");
+  formButton.textContent = "Submit"
+
+  formEl.appendChild(formInput);
+  formEl.appendChild(formButton);
+  
+  formButton.addEventListener("click", highScoreHandler);
 };
-//console.log(finalScore);
 
-
-
-// TODO: LEFT OFF HERE. need to figure out how to save highscores to local storage
-// create array to hold high scores for saving
-
+// highScoreHandler function to store high scores to local storage
 var highScores = JSON.parse(window.localStorage.getItem("highScores")) || [];
 var highScoreHandler = function(event) {
-  console.log("highScores" + highScores);
   event.preventDefault();
   var initialsInput = document.querySelector("input[name='initials']").value;
   
@@ -141,78 +134,15 @@ var highScoreHandler = function(event) {
 
   var highScoreObj = {
     name: initialsInput,
-    score: finalScore
+    score: timeLeft
   };
 
-  console.log(highScoreObj);
-
   highScores.push(highScoreObj);
-  console.log(highScores);
 
-  //saveHighScore();
   localStorage.setItem("highScores", JSON.stringify(highScores));
 
   window.location.href= "highScores.html"
 };
 
-  
-
-  // var createHighScoreEl = function(savedHighScores) {
-  //   const score = document.createElement("li");
-  // }
-// };
-
-
-// var loadHighScore = function() {
-//   var savedHighScores = localStorage.getitem("highScores");
-//     if (!savedHighScores) {
-//       return false;
-//     }
-//     savedHighScores = JSON.parse(savedHighScores);
-
-//     for (var i = 0; i < savedHighScores.length; i++) {
-//       createHighScore(savedHighScores[i]);
-//     }
-// };
-
-// var createHighScore = function() {
-
-// }
-
-submitBtn.addEventListener("click", highScoreHandler);
-//formEl.addEventListener("submit", highScoreHandler);
-
-// function saveHighScore() {
-//   var initials = initialsEl.value.trim();
-//   console.log(initials);
-
-//   var highscores = 
-//     JSON.parse(window.localStorage.getItem("highscores"));
-//     if (highscores === null) {
-//       highscores = 0;
-//     }
-
-//     if (timeLeft > highscores) {
-//       JSON.stringify(window.localStorage.setItem("highscores", timeLeft))
-//       JSON.stringify(window.localStorage.setItem("initials", initials))
-//     }
-// }
-
+// event listener to start quiz when button is clicked
 startBtn.addEventListener("click", startQuiz);
-
-
-// AS A coding boot camp student
-// I WANT to take a timed quiz on JavaScript fundamentals that stores high scores
-// SO THAT I can gauge my progress compared to my peers
-
-// GIVEN I am taking a code quiz
-// WHEN I click the start button
-// THEN a timer starts and I am presented with a question
-// WHEN I answer a question
-// THEN I am presented with another question
-// WHEN I answer a question incorrectly
-// THEN time is subtracted from the clock
-// WHEN all questions are answered or the timer reaches 0
-// THEN the game is over
-// WHEN the game is over
-// THEN I can save my initials and score

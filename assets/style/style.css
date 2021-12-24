@@ -39,6 +39,15 @@ header a {
   padding: 20px;
 }
 
+.container h2 {
+  color: #614d91;
+  font-style: italic;
+}
+
+.options p {
+  padding: 20px 30px;
+}
+
 .buttondiv {
   display: flex;
   flex-wrap: wrap;
@@ -60,10 +69,10 @@ header a {
   background-color: var(--tertiary-color);
 }
 
+/* End quiz form input section */
 form {
   margin: 40px 20px;
   width: 100%;
-  height: 100px;
   text-align: center;
   display: flex;
   flex-wrap: wrap;
@@ -73,21 +82,32 @@ form {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
+}
+
+.form-text {
+  justify-content: center;
+  padding: 12px 10px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+/* High score page */
+.high-score-header {
+  margin-top: 50px;
 }
 
 .high-scores {
-  margin: 10px 150px;
-}
-
-
-#high-scores-list {
-  background-color:#b9a4e9;
-  text-align: center;
-  padding: 20px;
   margin: auto;
+  width: 50%;
+  padding: 10px;
 }
 
-/* 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.score-item {
+  text-align: left;
+  background-color:#d6c7fa;
+  padding: 6px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 100%
+}
