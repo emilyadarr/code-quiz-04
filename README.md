@@ -4,3 +4,4 @@ A timed coding quiz with multiple-choice questions for coding students studying 
 
 https://emilyadarr.github.io/code-quiz-04/
 
+![image](https://github.com/emilyadarr/code-quiz-04/blob/main/assets/images/Screenshot%20(29).png?raw=true)
